@@ -1,0 +1,8 @@
+.state/
+reports/
+TestResults.xml
+config/organization.json
+config/*.local.json
+.env
+.env.*
+!.env.example

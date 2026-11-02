@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "trustedModules": [
+    "Modules/Reporting/Adapters/Html/Html.psm1",
+    "Modules/Reporting/Adapters/Grafana/Grafana.psm1"
+  ],
+  "adapters": [
+    {
+      "id": "html",
+      "enabled": true,
+      "module": "Modules/Reporting/Adapters/Html/Html.psm1",
+      "failurePolicy": "FailPipeline",
+      "settings": {
+        "outputPath": "reports/branch-lifecycle.html"
+      }
+    }
+  ]
+}

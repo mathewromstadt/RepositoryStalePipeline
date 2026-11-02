@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-01T00:00:00Z",
+  "status": "Succeeded",
+  "code": "Delivered",
+  "adapterId": "html",
+  "runId": "example-run",
+  "failurePolicy": "FailPipeline",
+  "schemaVersion": "1.0",
+  "capability": "Snapshot"
+}

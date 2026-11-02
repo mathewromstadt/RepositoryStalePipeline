@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "timestamp": "2026-01-01T00:00:00.0000000Z",
+  "sourceProvider": "azure-devops",
+  "results": {
+    "summary": {
+      "eligible": 0,
+      "attentionRepositories": 1,
+      "repositories": 2,
+      "warnings": 1,
+      "branches": 1,
+      "pending": 0,
+      "evaluationFailures": 0,
+      "protected": 0,
+      "discoveryFailures": 0,
+      "active": 0,
+      "stale": 1,
+      "healthyRepositories": 1,
+      "durationSeconds": 0.0,
+      "projects": 1
+    }
+  },
+  "id": "example-run/event/0",
+  "runId": "example-run",
+  "policy": {
+    "version": "1.0.0",
+    "id": "branch-lifecycle"
+  },
+  "evaluationStatus": "Succeeded",
+  "domain": "branch-lifecycle",
+  "type": "EvaluationOutcome"
+}

@@ -1,0 +1,21 @@
+{
+  "organization": {
+    "name": "Example Organization",
+    "url": "https://dev.azure.com/your-organization"
+  },
+  "exclusions": {
+    "projectIds": [],
+    "repositoryIds": []
+  },
+  "branchPolicy": {
+    "staleAfterDays": 30,
+    "warningGraceDays": 7,
+    "protectedBranches": [
+      "main",
+      "master",
+      "develop",
+      "release/*",
+      "hotfix/*"
+    ]
+  }
+}

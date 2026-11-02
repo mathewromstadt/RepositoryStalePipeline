@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adapterId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capability": {
+      "enum": [
+        "Snapshot",
+        "Events",
+        "Metrics"
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "status": {
+      "enum": [
+        "Succeeded",
+        "Failed"
+      ]
+    },
+    "code": {
+      "enum": [
+        "Delivered",
+        "ConfigurationFailure",
+        "InitializationFailure",
+        "PublicationFailure"
+      ]
+    },
+    "failurePolicy": {
+      "enum": [
+        "Continue",
+        "FailPipeline"
+      ]
+    },
+    "httpStatusCode": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 599
+    },
+    "attempts": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "diagnosticCode": {
+      "enum": [
+        "TransportFailure",
+        "RequestRejected",
+        "Unauthorized",
+        "Forbidden",
+        "EndpointNotFound",
+        "PayloadTooLarge",
+        "RateLimited",
+        "DestinationUnavailable",
+        "HttpFailure"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "runId",
+    "adapterId",
+    "capability",
+    "timestamp",
+    "status",
+    "code",
+    "failurePolicy"
+  ],
+  "additionalProperties": false
+}

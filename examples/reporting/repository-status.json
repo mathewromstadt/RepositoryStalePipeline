@@ -1,0 +1,24 @@
+{
+  "runId": "example-run",
+  "domain": "branch-lifecycle",
+  "schemaVersion": "1.0",
+  "policy": {
+    "version": "1.0.0",
+    "id": "branch-lifecycle"
+  },
+  "evaluationStatus": "Succeeded",
+  "sourceProvider": "azure-devops",
+  "results": {
+    "attentionCount": 0,
+    "project": "Example Project",
+    "runId": "example-run",
+    "repository": "Empty Repository",
+    "organization": "Example Organization",
+    "status": "Healthy",
+    "evaluatedAt": "2026-01-01T00:00:00Z",
+    "branchCount": 0
+  },
+  "type": "RepositoryStatus",
+  "timestamp": "2026-01-01T00:00:00Z",
+  "id": "example-run/event/4"
+}

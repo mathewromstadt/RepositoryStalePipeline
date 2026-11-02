@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0",
+  "policy": {
+    "version": "1.0.0",
+    "id": "branch-lifecycle"
+  },
+  "timestamp": "2026-01-01T00:00:00.0000000Z",
+  "evaluationStatus": "Succeeded",
+  "id": "example-run/snapshot",
+  "runId": "example-run",
+  "sourceProvider": "azure-devops",
+  "domain": "branch-lifecycle",
+  "results": {
+    "organization": "Example Organization",
+    "summary": {
+      "eligible": 0,
+      "attentionRepositories": 1,
+      "repositories": 2,
+      "warnings": 1,
+      "branches": 1,
+      "pending": 0,
+      "evaluationFailures": 0,
+      "protected": 0,
+      "discoveryFailures": 0,
+      "active": 0,
+      "stale": 1,
+      "healthyRepositories": 1,
+      "durationSeconds": 0.0,
+      "projects": 1
+    },
+    "repositories": [
+      {
+        "repository": "Empty Repository",
+        "attentionCount": 0,
+        "project": "Example Project",
+        "branchCount": 0,
+        "status": "Healthy"
+      },
+      {
+        "repository": "Example Repository",
+        "attentionCount": 1,
+        "project": "Example Project",
+        "branchCount": 1,
+        "status": "Attention"
+      }
+    ],
+    "branches": [
+      {
+        "repository": "Example Repository",
+        "ref": "refs/heads/feature/example",
+        "decision": "Stale",
+        "project": "Example Project",
+        "action": "Warn"
+      }
+    ]
+  }
+}

@@ -1,0 +1,478 @@
+{
+  "apiVersion": "dashboard.grafana.app/v1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "governance-overview"
+  },
+  "spec": {
+    "uid": "governance-overview",
+    "title": "Governance Overview",
+    "schemaVersion": 39,
+    "version": 1,
+    "tags": [
+      "governance"
+    ],
+    "timezone": "utc",
+    "time": {
+      "from": "now-30d",
+      "to": "now"
+    },
+    "refresh": "5m",
+    "templating": {
+      "list": [
+        {
+          "name": "DS_PROMETHEUS",
+          "type": "datasource",
+          "query": "prometheus",
+          "label": "Metrics datasource"
+        },
+        {
+          "name": "DS_LOKI",
+          "type": "datasource",
+          "query": "loki",
+          "label": "Events datasource"
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 10,
+        "title": "Repository status",
+        "description": "Latest observed status per organization/project/repository within the selected time range, matching HTML status rules. Last evaluated identifies stale observations. Includes empty repositories. Requires a pipeline run with RepositoryStatus events. Query limit: 5000 rows; narrow the time range if truncated.",
+        "type": "table",
+        "datasource": {
+          "type": "loki",
+          "uid": "${DS_LOKI}"
+        },
+        "gridPos": {
+          "h": 12,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "{application=\"governance\"} | json eventType=\"type\", row=\"results\" | eventType=\"RepositoryStatus\" | __error__=\"\" | line_format \"{{.row}}\" | drop eventType, row",
+            "queryType": "range",
+            "direction": "backward",
+            "maxLines": 5000,
+            "datasource": {
+              "type": "loki",
+              "uid": "${DS_LOKI}"
+            }
+          }
+        ],
+        "transformations": [
+          {
+            "id": "extractFields",
+            "options": {
+              "source": "Line",
+              "format": "json",
+              "replace": true,
+              "keepTime": true
+            }
+          },
+          {
+            "id": "merge",
+            "options": {}
+          },
+          {
+            "id": "sortBy",
+            "options": {
+              "sort": [
+                {
+                  "field": "Time",
+                  "desc": false
+                }
+              ]
+            }
+          },
+          {
+            "id": "groupBy",
+            "options": {
+              "fields": {
+                "organization": {
+                  "operation": "groupby",
+                  "aggregations": []
+                },
+                "project": {
+                  "operation": "groupby",
+                  "aggregations": []
+                },
+                "repository": {
+                  "operation": "groupby",
+                  "aggregations": []
+                },
+                "status": {
+                  "operation": "aggregate",
+                  "aggregations": [
+                    "last"
+                  ]
+                },
+                "branchCount": {
+                  "operation": "aggregate",
+                  "aggregations": [
+                    "last"
+                  ]
+                },
+                "attentionCount": {
+                  "operation": "aggregate",
+                  "aggregations": [
+                    "last"
+                  ]
+                },
+                "evaluatedAt": {
+                  "operation": "aggregate",
+                  "aggregations": [
+                    "last"
+                  ]
+                },
+                "runId": {
+                  "operation": "aggregate",
+                  "aggregations": [
+                    "last"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "indexByName": {
+                "organization": 0,
+                "project": 1,
+                "repository": 2,
+                "status (last)": 3,
+                "branchCount (last)": 4,
+                "attentionCount (last)": 5,
+                "evaluatedAt (last)": 6,
+                "runId (last)": 7
+              },
+              "renameByName": {
+                "organization": "Organization",
+                "project": "Project",
+                "repository": "Repository",
+                "status (last)": "Status",
+                "branchCount (last)": "Branches",
+                "attentionCount (last)": "Attention",
+                "evaluatedAt (last)": "Last evaluated (UTC)",
+                "runId (last)": "Run"
+              },
+              "excludeByName": {}
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "auto",
+              "filterable": true
+            },
+            "noValue": "No repository events received"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Status"
+              },
+              "properties": [
+                {
+                  "id": "mappings",
+                  "value": [
+                    {
+                      "type": "value",
+                      "options": {
+                        "Healthy": {
+                          "text": "Healthy",
+                          "color": "green",
+                          "index": 0
+                        },
+                        "Attention": {
+                          "text": "Attention",
+                          "color": "red",
+                          "index": 1
+                        },
+                        "Unknown": {
+                          "text": "Unknown",
+                          "color": "orange",
+                          "index": 2
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "type": "color-background"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "showHeader": true,
+          "cellHeight": "sm",
+          "sortBy": [
+            {
+              "displayName": "Project",
+              "desc": false
+            },
+            {
+              "displayName": "Repository",
+              "desc": false
+            }
+          ],
+          "footer": {
+            "show": false
+          },
+          "enablePagination": true
+        }
+      },
+      {
+        "id": 1,
+        "title": "Governance overview",
+        "type": "stat",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 12
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "last_over_time(governance_repositories[30d])",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "options": {}
+      },
+      {
+        "id": 2,
+        "title": "Repository compliance",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 12
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "{__name__=~\"governance_(healthy|attention)_repositories\"}",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "options": {}
+      },
+      {
+        "id": 3,
+        "title": "Branch lifecycle status",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 20
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "governance_branch_decisions",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "options": {}
+      },
+      {
+        "id": 4,
+        "title": "Historical execution duration",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 20
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "governance_execution_duration_seconds",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "options": {}
+      },
+      {
+        "id": 5,
+        "title": "Last successful evaluation",
+        "type": "stat",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 28
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "last_over_time(governance_last_successful_evaluation_timestamp_seconds[30d])",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "options": {}
+      },
+      {
+        "id": 6,
+        "title": "Execution failures",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 28
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "{__name__=~\"governance_(discovery_failures|evaluation_failures|execution_failed)\"}",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "options": {}
+      },
+      {
+        "id": 7,
+        "title": "Adapter health",
+        "type": "timeseries",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 36
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "governance_adapter_publication_failures",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "options": {}
+      },
+      {
+        "id": 8,
+        "title": "Recent governance events",
+        "type": "logs",
+        "datasource": {
+          "type": "loki",
+          "uid": "${DS_LOKI}"
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 36
+        },
+        "targets": [
+          {
+            "refId": "A",
+            "expr": "{application=\"governance\"} | json",
+            "datasource": {
+              "type": "loki",
+              "uid": "${DS_LOKI}"
+            }
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "options": {}
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "trustedModules": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "adapters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "module": {
+            "type": "string",
+            "minLength": 1
+          },
+          "failurePolicy": {
+            "enum": [
+              "Continue",
+              "FailPipeline"
+            ]
+          },
+          "settings": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "module",
+          "failurePolicy",
+          "settings"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "trustedModules",
+    "adapters"
+  ],
+  "additionalProperties": false
+}

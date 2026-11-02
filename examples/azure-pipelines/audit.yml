@@ -1,0 +1,31 @@
+# Manual template: define organizationName, organizationUrl, and secret ADO_PAT.
+trigger: none
+pr: none
+pool:
+  vmImage: ubuntu-latest
+steps:
+  - checkout: self
+    persistCredentials: false
+  - pwsh: |
+      $ErrorActionPreference = 'Stop'
+      $configuration = Get-Content config/organization.example.json -Raw | ConvertFrom-Json
+      $configuration.organization.name = $env:ORGANIZATION_NAME
+      $configuration.organization.url = $env:ORGANIZATION_URL
+      $configuration | ConvertTo-Json -Depth 10 | Set-Content config/organization.json
+      ./Invoke-BranchLifecycle.ps1 -DryRun -StatePath "$(Pipeline.Workspace)/state.json" -AuditPath "$(Build.ArtifactStagingDirectory)/audit.jsonl"
+    displayName: Audit repositories
+    env:
+      ORGANIZATION_NAME: $(organizationName)
+      ORGANIZATION_URL: $(organizationUrl)
+      ADO_AUTH_MODE: PAT
+      ADO_PAT: $(ADO_PAT)
+  - task: PublishPipelineArtifact@1
+    condition: always()
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: audit
+  - task: PublishPipelineArtifact@1
+    condition: always()
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/reports'
+      artifact: reports

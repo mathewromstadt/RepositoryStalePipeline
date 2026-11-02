@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "trustedModules": [
+    "examples/reporting/custom-adapter/Example.psm1"
+  ],
+  "adapters": [
+    {
+      "id": "example",
+      "enabled": true,
+      "module": "examples/reporting/custom-adapter/Example.psm1",
+      "failurePolicy": "Continue",
+      "settings": {}
+    }
+  ]
+}

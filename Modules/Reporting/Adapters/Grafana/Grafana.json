@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "id": "grafana",
+  "version": "1.0.0",
+  "contractVersions": [
+    "1.0"
+  ],
+  "capabilities": [
+    "Snapshot",
+    "Events",
+    "Metrics"
+  ],
+  "module": "Modules/Reporting/Adapters/Grafana/Grafana.psm1",
+  "requiredConfiguration": []
+}

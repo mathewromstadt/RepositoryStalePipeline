@@ -1,0 +1,263 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceProvider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evaluationStatus": {
+      "enum": [
+        "Succeeded",
+        "Failed",
+        "Incomplete"
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "results": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "runId",
+    "timestamp",
+    "domain",
+    "sourceProvider",
+    "evaluationStatus",
+    "policy",
+    "results"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "domain": {
+            "const": "branch-lifecycle"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "results": {
+            "type": "object",
+            "properties": {
+              "organization": {
+                "type": "string",
+                "minLength": 1
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "projects": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "repositories": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "branches": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "healthyRepositories": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "attentionRepositories": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "protected": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "active": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "stale": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "warnings": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "pending": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "eligible": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "discoveryFailures": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "evaluationFailures": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "durationSeconds": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "projects",
+                  "repositories",
+                  "branches",
+                  "healthyRepositories",
+                  "attentionRepositories",
+                  "protected",
+                  "active",
+                  "stale",
+                  "warnings",
+                  "pending",
+                  "eligible",
+                  "discoveryFailures",
+                  "evaluationFailures",
+                  "durationSeconds"
+                ],
+                "additionalProperties": false
+              },
+              "repositories": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "project": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "repository": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "status": {
+                      "enum": [
+                        "Healthy",
+                        "Attention",
+                        "Unknown"
+                      ]
+                    },
+                    "branchCount": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "attentionCount": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "project",
+                    "repository",
+                    "status",
+                    "branchCount",
+                    "attentionCount"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "branches": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "project": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "repository": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "ref": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "decision": {
+                      "enum": [
+                        "Protected",
+                        "ActivePR",
+                        "UnknownCommitDate",
+                        "Active",
+                        "Stale"
+                      ]
+                    },
+                    "action": {
+                      "enum": [
+                        "Skip",
+                        "Warn",
+                        "Pending",
+                        "Eligible"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "project",
+                    "repository",
+                    "ref",
+                    "decision",
+                    "action"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "organization",
+              "summary",
+              "repositories",
+              "branches"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

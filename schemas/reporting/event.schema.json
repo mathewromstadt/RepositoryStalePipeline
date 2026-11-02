@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "domain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceProvider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evaluationStatus": {
+      "enum": [
+        "Succeeded",
+        "Failed",
+        "Incomplete"
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "results": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "runId",
+    "timestamp",
+    "domain",
+    "sourceProvider",
+    "evaluationStatus",
+    "policy",
+    "type",
+    "results"
+  ],
+  "additionalProperties": false
+}
